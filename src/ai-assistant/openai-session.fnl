@@ -14,29 +14,37 @@
 (fn send-message [session message]
   (let [msg
         {:state :sending
+         :role :user
+         :id (+ (length session.messages) 1)
          :error nil
          :data
           {:role :user
            :content message}}]
     (table.insert session.messages
                   msg)
-    (session.notify-message-change)
+    (session.on-new-message msg)
     (log.warn :Messages session)
     (let [resp (completion
                  {:model session.model
                   :messages (list.map session.messages
                                       #(. $1 :data))})]
+      (log.warn "RESP")
+      (log.warn resp)
       (if (is-ok resp)
         (do
           (tset msg :state :sent)
-          (table.insert session.messages
-                        {:state :sent
-                         :data {:role :assistant
-                                :content (. resp :value :choices 1 :message :content)}}))
+          (session.on-message-change msg)
+          (let [resp-msg {:state :sent
+                          :role :ai
+                          :id (+ (length session.messages) 1)
+                          :data {:role :assistant
+                                 :content (. resp :value :choices 1 :message :content)}}]
+            (table.insert session.messages resp-msg)
+            (session.on-new-message resp-msg)))
         (do
-          (tset msg :error resp.message)
-          (tset msg :state :failed)))
-      (session.notify-message-change))))
+          (tset msg :error resp.message.message)
+          (tset msg :state :failed)
+          (session.on-message-change msg))))))
 
 (fn get-message-content [msg]
   (. msg :data :content))

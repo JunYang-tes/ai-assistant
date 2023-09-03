@@ -12,16 +12,26 @@
 ;          (Table [
 ;                  :a (Fn [S] M)
 ;                  :b (Fn [M] S)]))
-; (TT String String {:a 1 :b 2})
+; ((TT String String) {:a 1 :b 2})
 
 (fn Types
   []
   (let [S (sym :String)
         N (sym :Number)
         Nil (sym :Nil)
+        List (sym :List)
+        Fn (sym :Fn)
         OneOf (sym :OneOf)
         T (sym :Table)]
-    `(local {: ,S : ,N : ,Nil : ,OneOf : ,T} (require :ai-assistant.type-hint))))
+    `(local {:String ,S
+             :Number ,N
+             :List ,List
+             :Nil ,N
+             :Fn ,Fn
+             :OneOf ,OneOf
+             :Table ,T} (require :ai-assistant.type-hint))))
+(fn Param [Name Type]
+  Name)
 (fn defn [args ret ...]
   (let [args-type []
         args []
@@ -31,6 +41,7 @@
                    {:__f (fn [_ ...] ,body)})))
 
 {: Type
+ : Param
  : Types
  : General
  : defn}

@@ -49,14 +49,17 @@ local function make_floating()
       return nil
     end
   end
-  local function _10_(cb)
-    local function _11_()
+  local function _10_()
+    return chats
+  end
+  local function _11_(cb)
+    local function _12_()
       local content = get_content(input)
       set_lines(input, {})
       return cb(content)
     end
-    return buf_keymap(input, {"n", "i"}, "<s-cr>", _11_)
+    return buf_keymap(input, {"n", "i"}, "<s-cr>", _12_)
   end
-  return {update = _8_, ["on-submit"] = _10_}
+  return {update = _8_, ["get-chars-win"] = _10_, ["on-submit"] = _11_}
 end
 return {["make-floating"] = make_floating}

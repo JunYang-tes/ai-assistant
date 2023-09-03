@@ -121,15 +121,25 @@ local function Map(key_type, value_type)
   end
   return _20_
 end
-local function Fn(args, ret)
+local function Const(value)
   local function _23_(input)
+    if (input == value) then
+      return nil
+    else
+      return string.format("Expected %s, got %s", tostring(value), tostring(input))
+    end
+  end
+  return make_type(_23_)
+end
+local function Fn(args, ret)
+  local function _25_(input)
     return nil
   end
-  return make_type(_23_, "Fn")
+  return make_type(_25_, "Fn")
 end
 local Void
-local function _24_()
+local function _26_()
   return nil
 end
-Void = make_type(_24_, "Void")
-return {String = String, Number = Number, Any = Any, Nil = Nil, Map = Map, List = List, Fn = Fn, Void = Void, Table = Table, OneOf = OneOf}
+Void = make_type(_26_, "Void")
+return {String = String, Number = Number, Any = Any, Nil = Nil, Map = Map, List = List, Fn = Fn, Const = Const, Void = Void, Table = Table, OneOf = OneOf}

@@ -1,4 +1,9 @@
 ;; fennel-ls: macro-file
+(fn is-ether [value]
+  `(do
+     (let [v# ,value]
+       (and (= (type v#) :table)
+            (= (. v# :__ether__) true)))))
 
 (fn err [message]
   "Make an error object"
@@ -21,8 +26,8 @@
   "make a ok object,if it's already a ok just return it"
   (let [ok-sym (gensym)]
     `(do (let [,ok-sym ,value
-               is-ok# ,(is-ok ok-sym)]
-           (if is-ok#
+               is-ether# ,(is-ether ok-sym)]
+           (if is-ether#
              ,ok-sym
              {:kind :ok
               :__ether__ true

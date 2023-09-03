@@ -93,7 +93,12 @@
               (set msg (or key-message value-message)))))
         msg))))
 
-
+(fn Const [value]
+  (make-type
+    (fn [input]
+      (if (= input value)
+        nil
+        (string.format "Expected %s, got %s" (tostring value) (tostring input))))))
 ;; We can just do type check on fn object
 ; (Type FnObject (Table
 ;                  [:args (List (f [Any] Boolean))
@@ -112,6 +117,7 @@
  : Map
  : List
  : Fn
+ : Const
  : Void
  : Table
  : OneOf}

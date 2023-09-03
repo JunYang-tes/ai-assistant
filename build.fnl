@@ -8,12 +8,13 @@
 
 (fn get-change-time [file]
   (-> (read-popen
-       (.. :stat " -c %Y " file))
+        (.. "stat -f '%m' " file))
+       ;(.. :stat " -c %Y " file))
       (. 1)
       tonumber))
 (fn get-src-list []
   (let [files
-        (read-popen "ls src/*.fnl src/*/*.fnl src/*/*/*.fnl -1")
+        (read-popen "find src -type f ")
         src (icollect [_ v (ipairs files)]
               (if (not (stringx.startswith v :src/macros))
                 v))]

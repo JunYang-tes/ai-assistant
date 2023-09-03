@@ -19,26 +19,26 @@ local function _5_(_3_, callback)
       local res0 = res
       local _11_
       do
-        local has_err_3_auto = true
-        for __4_auto, _7_ in ipairs({res0}) do
+        local has_err_4_auto = true
+        for __5_auto, _7_ in ipairs({res0}) do
           local _12_
           do
-            local v_1_auto = _7_
-            _12_ = ((type(v_1_auto) == "table") and ((v_1_auto).__ether__ == true) and ((v_1_auto).kind == "ok"))
+            local v_2_auto = _7_
+            _12_ = ((type(v_2_auto) == "table") and ((v_2_auto).__ether__ == true) and ((v_2_auto).kind == "ok"))
           end
           if (((type(_7_) == "table") and ((_7_).__ether__ == true)) and not _12_) then
-            has_err_3_auto = false
+            has_err_4_auto = false
           else
           end
         end
-        _11_ = has_err_3_auto
+        _11_ = has_err_4_auto
       end
       if _11_ then
         local res1
         local _15_
         do
-          local v_1_auto = res0
-          _15_ = ((type(v_1_auto) == "table") and ((v_1_auto).__ether__ == true) and ((v_1_auto).kind == "ok"))
+          local v_2_auto = res0
+          _15_ = ((type(v_2_auto) == "table") and ((v_2_auto).__ether__ == true) and ((v_2_auto).kind == "ok"))
         end
         if _15_ then
           res1 = (res0).value
@@ -53,37 +53,37 @@ local function _5_(_3_, callback)
             _8_ = {__ether__ = true, kind = "err", message = res1.error}
           end
         end
-        local is_ok_2_auto
+        local is_ether_3_auto
         do
           local v_1_auto = _8_
-          is_ok_2_auto = ((type(v_1_auto) == "table") and ((v_1_auto).__ether__ == true) and ((v_1_auto).kind == "ok"))
+          is_ether_3_auto = ((type(v_1_auto) == "table") and ((v_1_auto).__ether__ == true))
         end
-        if is_ok_2_auto then
+        if is_ether_3_auto then
           return _8_
         else
           return {__ether__ = true, kind = "ok", value = _8_}
         end
       else
-        local fierst_err_5_auto = nil
-        local i_6_auto = 1
-        local done_7_auto = false
-        while (i_6_auto <= #{res0}) do
+        local fierst_err_6_auto = nil
+        local i_7_auto = 1
+        local done_8_auto = false
+        while (i_7_auto <= #{res0}) do
           do
-            local _9_ = ({res0})[i_6_auto]
+            local _9_ = ({res0})[i_7_auto]
             local _20_
             do
-              local v_1_auto = _9_
-              _20_ = ((type(v_1_auto) == "table") and ((v_1_auto).__ether__ == true) and ((v_1_auto).kind == "ok"))
+              local v_2_auto = _9_
+              _20_ = ((type(v_2_auto) == "table") and ((v_2_auto).__ether__ == true) and ((v_2_auto).kind == "ok"))
             end
             if (((type(_9_) == "table") and ((_9_).__ether__ == true)) and not _20_) then
-              fierst_err_5_auto = _9_
-              i_6_auto = (#{res0} + 1)
+              fierst_err_6_auto = _9_
+              i_7_auto = (#{res0} + 1)
             else
             end
           end
-          i_6_auto = (i_6_auto + 1)
+          i_7_auto = (i_7_auto + 1)
         end
-        return fierst_err_5_auto
+        return fierst_err_6_auto
       end
     end
     return callback(_10_())

@@ -30,14 +30,31 @@
         (tset ctx.sessions buffer session)
         session)
       session)))
+
+(fn convert-to-message [ctx provider-message]
+  {:state provider-message.state
+   :id provider-message.id
+   :error provider-message.error
+   :role provider-message.role
+   :content (ctx.provider.get-message-content provider-message)})
+
 (fn get-messages [ctx session]
   (-> session
          ctx.provider.filter-message
          (list.map (fn [msg]
-                     {:state msg.state
-                      :content (ctx.provider.get-message-content msg)}))))
+                     (convert-to-message ctx msg)))))
 (fn send-message [ctx session message]
   (ctx.provider.send-message session message))
+
+(fn set-handlers [ctx session new update]
+  (tset session :on-new-message
+        (fn [msg]
+          (new (convert-to-message ctx msg))))
+  (tset session :on-message-change
+        (fn [msg]
+          (update (convert-to-message ctx msg)))))
+
 {: get-session
  : get-messages
+ : set-handlers
  : send-message}

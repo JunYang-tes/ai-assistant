@@ -10,28 +10,33 @@ local function create_session(_3_)
   return {messages = {{state = "sent", data = {role = "system", content = role_setting}}}, model = options["openai-model"]}
 end
 local function send_message(session, message)
-  local msg = {state = "sending", error = nil, data = {role = "user", content = message}}
+  local msg = {state = "sending", role = "user", id = (#session.messages + 1), error = nil, data = {role = "user", content = message}}
   table.insert(session.messages, msg)
-  session["notify-message-change"]()
+  session["on-new-message"](msg)
   log.warn("Messages", session)
   local resp
   local function _5_(_241)
     return (_241).data
   end
   resp = completion({model = session.model, messages = list.map(session.messages, _5_)})
+  log.warn("RESP")
+  log.warn(resp)
   local _6_
   do
-    local v_1_auto = resp
-    _6_ = ((type(v_1_auto) == "table") and ((v_1_auto).__ether__ == true) and ((v_1_auto).kind == "ok"))
+    local v_2_auto = resp
+    _6_ = ((type(v_2_auto) == "table") and ((v_2_auto).__ether__ == true) and ((v_2_auto).kind == "ok"))
   end
   if _6_ then
     msg["state"] = "sent"
-    table.insert(session.messages, {state = "sent", data = {role = "assistant", content = resp.value.choices[1].message.content}})
+    session["on-message-change"](msg)
+    local resp_msg = {state = "sent", role = "ai", id = (#session.messages + 1), data = {role = "assistant", content = resp.value.choices[1].message.content}}
+    table.insert(session.messages, resp_msg)
+    return session["on-new-message"](resp_msg)
   else
-    msg["error"] = resp.message
+    msg["error"] = resp.message.message
     msg["state"] = "failed"
+    return session["on-message-change"](msg)
   end
-  return session["notify-message-change"]()
 end
 local function get_message_content(msg)
   return msg.data.content

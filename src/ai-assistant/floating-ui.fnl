@@ -70,6 +70,7 @@
     {:update (fn [content]
                (if (not chats.closed)
                  (set-lines chats content)))
+     :get-chars-win #chats
      :on-submit (fn [cb]
                   (buf-keymap
                     input

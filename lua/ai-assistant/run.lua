@@ -6,7 +6,10 @@ local floating = require("ai-assistant.floating-ui")
 local _local_2_ = require("ai-assistant.session")
 local get_session = _local_2_["get-session"]
 local get_messages = _local_2_["get-messages"]
+local set_handlers = _local_2_["set-handlers"]
 local send_message = _local_2_["send-message"]
+local _local_3_ = require("ai-assistant.chats-render")
+local make_render = _local_3_["make-render"]
 local log = require("ai-assistant.log")
 local function get_context(ctx_name)
   if (ctx_name == "openai") then
@@ -26,30 +29,34 @@ local function get_ui(name)
   end
 end
 local function run(buf)
-  local function _5_()
+  local function _6_()
     print(vim.inspect(options))
     local ui = get_ui(options.ui)
     local ctx = get_context(options.context)
     local session = get_session(ctx, buf)
-    local function _6_()
-      local messages = get_messages(ctx, session)
-      local function _7_()
-        local function _8_(_2410)
-          return (_2410).content
-        end
-        return ui.update(list.map(messages, _8_))
+    local chats = ui["get-chars-win"]()
+    local chats_render = make_render(chats, get_messages(ctx, session))
+    local function _7_(new)
+      local function _8_()
+        return chats_render.add(new)
       end
-      return vim.schedule(_7_)
+      return vim.schedule(_8_)
     end
-    session["notify-message-change"] = _6_
-    local function _9_(content)
+    local function _9_(updated)
       local function _10_()
+        return chats_render.update(updated)
+      end
+      return vim.schedule(_10_)
+    end
+    set_handlers(ctx, session, _7_, _9_)
+    local function _11_(content)
+      local function _12_()
         return send_message(ctx, session, content)
       end
-      return async.run(_10_)
+      return async.run(_12_)
     end
-    return ui["on-submit"](_9_)
+    return ui["on-submit"](_11_)
   end
-  return async.run(_5_)
+  return async.run(_6_)
 end
 return run

@@ -19,13 +19,27 @@ local function get_session(ctx, buffer)
     return session
   end
 end
+local function convert_to_message(ctx, provider_message)
+  return {state = provider_message.state, id = provider_message.id, error = provider_message.error, role = provider_message.role, content = ctx.provider["get-message-content"](provider_message)}
+end
 local function get_messages(ctx, session)
   local function _2_(msg)
-    return {state = msg.state, content = ctx.provider["get-message-content"](msg)}
+    return convert_to_message(ctx, msg)
   end
   return list.map(ctx.provider["filter-message"](session), _2_)
 end
 local function send_message(ctx, session, message)
   return ctx.provider["send-message"](session, message)
 end
-return {["get-session"] = get_session, ["get-messages"] = get_messages, ["send-message"] = send_message}
+local function set_handlers(ctx, session, new, update)
+  local function _3_(msg)
+    return new(convert_to_message(ctx, msg))
+  end
+  session["on-new-message"] = _3_
+  local function _4_(msg)
+    return update(convert_to_message(ctx, msg))
+  end
+  session["on-message-change"] = _4_
+  return nil
+end
+return {["get-session"] = get_session, ["get-messages"] = get_messages, ["set-handlers"] = set_handlers, ["send-message"] = send_message}
