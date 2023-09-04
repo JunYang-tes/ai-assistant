@@ -2,14 +2,24 @@
 (local inspect (require :inspect))
 (local stringx (require :pl.stringx))
 
+(fn os-name []
+  (let [binary-format (: package.cpath
+                         :match
+                         "%p[\\|/]?%p(%a+)")]
+    (case binary-format
+      :dll :windows
+      :so :linux
+      :dylib :macos)))
+
 (fn read-popen [cmd]
  (with-open [in (io.popen cmd)]
   (icollect [i v (in:lines)] i)))
 
 (fn get-change-time [file]
   (-> (read-popen
-        (.. "stat -f '%m' " file))
-       ;(.. :stat " -c %Y " file))
+        (case (os-name)
+          :macos (.. "stat -f '%m' " file)
+          :linux (.. "stat -c %Y " file)))
       (. 1)
       tonumber))
 (fn get-src-list []
