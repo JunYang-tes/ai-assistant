@@ -9,11 +9,18 @@
 (local {: make-render} (require :ai-assistant.chats-render))
 (local log (require :ai-assistant.log))
 
-(fn get-context [ctx-name]
+(local running-context {})
+(fn create-context [ctx-name]
   (if (= ctx-name :openai)
     (let [openai-provider (require :ai-assistant.openai-session)
           openai-context {:sessions {} :provider openai-provider}]
       openai-context)))
+
+(fn get-context [ctx-name]
+  (let [ctx (or (. running-context ctx-name)
+                (create-context ctx-name))]
+    (tset running-context ctx-name ctx)
+    ctx))
 
 (fn get-ui [name]
   (if (= name :floating)
@@ -22,7 +29,6 @@
 
 (fn run [buf]
   (async.run (fn []
-               (print (vim.inspect options))
                (let [ui (get-ui options.ui)
                      ctx (get-context options.context)
                      session (get-session ctx buf)

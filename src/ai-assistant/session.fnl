@@ -10,7 +10,7 @@
                     buffer 0 -1 false))
         filename (vim.api.nvim_buf_get_name buffer)]
     (.. "You are a skilled programmer and you are pairing programming with a person named Blob \n"
-                       "Currently editing file name is " filename
+                       "Currently editing file name is " filename "\n."
                        "The file content is quoted by \"---begein---\" and \"---end---\",see below\n"
                        "---begin---\n"
                        content

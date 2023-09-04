@@ -28,8 +28,6 @@
                  {:model session.model
                   :messages (list.map session.messages
                                       #(. $1 :data))})]
-      (log.warn "RESP")
-      (log.warn resp)
       (if (is-ok resp)
         (do
           (tset msg :state :sent)
