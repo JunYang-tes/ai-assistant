@@ -19,8 +19,6 @@ local function send_message(session, message)
     return (_241).data
   end
   resp = completion({model = session.model, messages = list.map(session.messages, _5_)})
-  log.warn("RESP")
-  log.warn(resp)
   local _6_
   do
     local v_2_auto = resp

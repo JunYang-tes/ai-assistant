@@ -11,7 +11,8 @@ local send_message = _local_2_["send-message"]
 local _local_3_ = require("ai-assistant.chats-render")
 local make_render = _local_3_["make-render"]
 local log = require("ai-assistant.log")
-local function get_context(ctx_name)
+local running_context = {}
+local function create_context(ctx_name)
   if (ctx_name == "openai") then
     local openai_provider = require("ai-assistant.openai-session")
     local openai_context = {sessions = {}, provider = openai_provider}
@@ -19,6 +20,11 @@ local function get_context(ctx_name)
   else
     return nil
   end
+end
+local function get_context(ctx_name)
+  local ctx = (running_context[ctx_name] or create_context(ctx_name))
+  do end (running_context)[ctx_name] = ctx
+  return ctx
 end
 local function get_ui(name)
   if (name == "floating") then
@@ -30,7 +36,6 @@ local function get_ui(name)
 end
 local function run(buf)
   local function _6_()
-    print(vim.inspect(options))
     local ui = get_ui(options.ui)
     local ctx = get_context(options.context)
     local session = get_session(ctx, buf)

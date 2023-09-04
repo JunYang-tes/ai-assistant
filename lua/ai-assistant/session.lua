@@ -4,7 +4,7 @@ local function role_setting(buffer)
   local filtetype = "TODO"
   local content = table.concat(vim.api.nvim_buf_get_lines(buffer, 0, -1, false))
   local filename = vim.api.nvim_buf_get_name(buffer)
-  return ("You are a skilled programmer and you are pairing programming with a person named Blob \n" .. "Currently editing file name is " .. filename .. "The file content is quoted by \"---begein---\" and \"---end---\",see below\n" .. "---begin---\n" .. content .. "---end---\n" .. "Blob will ask you to write some code, you should reply code directly without explaination unless " .. "you are asked to explain.\n" .. "Please use markdown format to write your code.\n")
+  return ("You are a skilled programmer and you are pairing programming with a person named Blob \n" .. "Currently editing file name is " .. filename .. "\n." .. "The file content is quoted by \"---begein---\" and \"---end---\",see below\n" .. "---begin---\n" .. content .. "---end---\n" .. "Blob will ask you to write some code, you should reply code directly without explaination unless " .. "you are asked to explain.\n" .. "Please use markdown format to write your code.\n")
 end
 local function create_session(ctx, buffer)
   return ctx.provider["create-session"]({["role-setting"] = role_setting(buffer)})
