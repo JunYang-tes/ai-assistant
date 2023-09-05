@@ -16,7 +16,6 @@
         chats-height (- height input-height)
         row (math.floor (/ (- editor-height  height) 2))
         col (math.floor (/ (- editor-width width) 2))
-        _ (print editor-height height row)
         chats (float
                 {: width
                  :height chats-height

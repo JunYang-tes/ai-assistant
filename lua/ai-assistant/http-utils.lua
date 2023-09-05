@@ -9,12 +9,12 @@ local function curl_response_handler(handler)
           local ok_3f, data = pcall(handler, resp.body)
           if ok_3f then
             local _4_ = data
-            local is_ok_2_auto
+            local is_ether_3_auto
             do
               local v_1_auto = _4_
-              is_ok_2_auto = ((type(v_1_auto) == "table") and ((v_1_auto).__ether__ == true) and ((v_1_auto).kind == "ok"))
+              is_ether_3_auto = ((type(v_1_auto) == "table") and ((v_1_auto).__ether__ == true))
             end
-            if is_ok_2_auto then
+            if is_ether_3_auto then
               return _4_
             else
               return {__ether__ = true, kind = "ok", value = _4_}

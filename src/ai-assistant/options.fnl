@@ -6,7 +6,7 @@
                  (os.getenv :OPENAI_API_KEY)
                  "")
    :openai-model "gpt-3.5-turbo"
-   :context "openai"
+   :provider "openai"
    :ui "floating"})
 
 {: options}

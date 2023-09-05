@@ -5,6 +5,7 @@
         : Number
         : Const
         : OneOf
+        : Nil
         : List
         : Any
         : Map
@@ -26,22 +27,21 @@
                  :role Role
                  :content String]))
 
-(General Provider SessionImpl MessageImpl
-         ;; MessageImpl must have id
-         (Table
-           [:send-message (Fn [SessionImpl] Void)
-            :filter-message (Fn [SessionImpl] (List MessageImpl))
-            :on-new-message (Fn [MessageImpl] Void)
-            :on-message-change (Fn [MessageImpl] Void)
-            :get-message-content (Fn [MessageImpl] String)
-            :create-session (Fn [(Table [:role-setting String] SessionImpl)])]))
+(Type OnNewMessage (Fn [Message] Void))
+(Type OnUpdateMessage (Fn [Message] Void))
+(Type Session (Table
+                [:get-messages (Fn [] (List Message))
+                 :update-profile (Fn [] Void)
+                 :set-handlers (Fn [OnNewMessage OnUpdateMessage] Void)
+                 :send-message (Fn [String] Void)]))
 
-(General Context SessionImpl MessageImpl
-         (Table
-           [:sessions (Map Number SessionImpl)
-            :provider (Provider SessionImpl MessageImpl)]))
+(Type Profile
+      (Table
+        [:init (Fn [] String)
+         :update (Fn [] (OneOf
+                          String
+                          Nil))]))
 
 {: Message
  : Role
- : Provider
- : Context}
+ : Profile}
