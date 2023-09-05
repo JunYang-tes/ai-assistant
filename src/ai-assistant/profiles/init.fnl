@@ -1,4 +1,5 @@
 (local pair-programmer (require :ai-assistant.profiles.pair-programmer))
+(local swagger (require :ai-assistant.profiles.swagger))
 (local general (require :ai-assistant.profiles.general))
 
 (fn profile [kind]
@@ -16,6 +17,7 @@
        (= (type obj.init) :function)
        (= (type obj.update) :function)))
 
-{:buffer-related-profiles (profile {: pair-programmer})
+{:buffer-related-profiles (profile {: pair-programmer
+                                    : swagger})
  :buffer-independent-profiles (profile {: general})
  : is-profile}

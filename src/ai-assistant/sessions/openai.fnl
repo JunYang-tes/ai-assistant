@@ -74,8 +74,7 @@
                          :data {:role :system
                                 :content profile}}]
             (table.insert session.messages
-                          message)))
-        (log.warn session)))
+                          message)))))
 
     (fn set-handlers [new update]
       (tset session :on-new-message new)

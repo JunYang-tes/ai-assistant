@@ -23,7 +23,6 @@
     (table.insert session.messages
                   msg)
     (session.on-new-message msg)
-    (log.warn :Messages session)
     (let [resp (completion
                  {:model session.model
                   :messages (list.map session.messages

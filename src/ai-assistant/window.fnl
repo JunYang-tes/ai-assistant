@@ -135,8 +135,11 @@
          "}"
          "```"])))
 (fn close [win]
-  (tset win :closed true)
-  (vim.api.nvim_win_close (win.get-winid) true))
+  (if (not win.closed)
+    (do
+      (tset win :closed true)
+      (vim.api.nvim_win_close (win.get-winid) true)
+      (vim.api.nvim_buf_delete (win.get-bufnr) {:force true}))))
 
 {: float
  : get-content
