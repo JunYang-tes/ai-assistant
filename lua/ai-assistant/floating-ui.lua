@@ -5,6 +5,7 @@ local get_content = _local_1_["get-content"]
 local get_editor_size = _local_1_["get-editor-size"]
 local close = _local_1_["close"]
 local winopt = _local_1_["winopt"]
+local set_title = _local_1_["set-title"]
 local buf_keymap = _local_1_["buf-keymap"]
 local set_lines = _local_1_["set-lines"]
 local function make_floating()
@@ -18,7 +19,7 @@ local function make_floating()
   local row = math.floor(((editor_height - height) / 2))
   local col = math.floor(((editor_width - width) / 2))
   local chats = float({width = width, height = chats_height, row = row, col = col, title = "Chats", border = "single", relative = "editor"}, true)
-  local input = float({width = width, height = input_height, row = (row + chats_height + 2), title = "Input", border = "single", col = col, relative = "editor"})
+  local input = float({width = width, height = input_height, row = (row + chats_height + 2), title = "Input(Send:Shift Enter)", border = "single", col = col, relative = "editor"})
   local input_winid = input["get-winid"]()
   local chats_winid = chats["get-winid"]()
   local function _3_()
@@ -48,17 +49,20 @@ local function make_floating()
       return nil
     end
   end
-  local function _10_()
+  local function _10_(title)
+    return set_title(chats, title)
+  end
+  local function _11_()
     return chats
   end
-  local function _11_(cb)
-    local function _12_()
+  local function _12_(cb)
+    local function _13_()
       local content = get_content(input)
       set_lines(input, {})
       return cb(content)
     end
-    return buf_keymap(input, {"n", "i"}, "<s-cr>", _12_)
+    return buf_keymap(input, {"n", "i"}, "<s-cr>", _13_)
   end
-  return {update = _8_, ["get-chars-win"] = _10_, ["on-submit"] = _11_}
+  return {update = _8_, ["update-title"] = _10_, ["get-chars-win"] = _11_, ["on-submit"] = _12_}
 end
 return {["make-floating"] = make_floating}

@@ -4,6 +4,7 @@
         : get-editor-size
         : close
         : winopt
+        : set-title
         : buf-keymap
         : set-lines } (require :ai-assistant.window))
 
@@ -28,7 +29,7 @@
                 {: width
                  :height input-height
                  :row (+ row chats-height 2)
-                 :title :Input
+                 :title "Input(Send:Shift Enter)"
                  :border :single
                  : col
                  :relative :editor})
@@ -69,6 +70,8 @@
     {:update (fn [content]
                (if (not chats.closed)
                  (set-lines chats content)))
+     :update-title (fn [title]
+                     (set-title chats title))
      :get-chars-win #chats
      :on-submit (fn [cb]
                   (buf-keymap

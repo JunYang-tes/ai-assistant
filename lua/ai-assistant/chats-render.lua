@@ -4,6 +4,7 @@ local MessageState = _local_1_["MessageState"]
 local Role = _local_1_["Role"]
 local _local_2_ = require("ai-assistant.window")
 local set_lines = _local_2_["set-lines"]
+local clear = _local_2_["clear"]
 local list = require("ai-assistant.list")
 local log = require("ai-assistant.log")
 local marker_ns = vim.api.nvim_create_namespace("marker")
@@ -129,15 +130,18 @@ local function make_render(win, messages)
     table.insert(messages0, msg0)
     return show_message(win, msg0)
   end
-  local function _16_(msg)
+  local function _16_()
+    return clear(win)
+  end
+  local function _17_(msg)
     local m
-    local function _17_(_241)
+    local function _18_(_241)
       return _241
     end
-    local function _18_(_241)
+    local function _19_(_241)
       return (_241.id == msg.id)
     end
-    m = list.first(messages0, _17_, _18_)
+    m = list.first(messages0, _18_, _19_)
     if m then
       m["state"] = msg.state
       m["error"] = msg.error
@@ -150,6 +154,6 @@ local function make_render(win, messages)
       return nil
     end
   end
-  return {add = _13_, update = _16_}
+  return {add = _13_, clear = _16_, update = _17_}
 end
 return {["make-render"] = make_render}

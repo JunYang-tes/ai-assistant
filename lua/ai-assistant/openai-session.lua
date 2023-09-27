@@ -13,7 +13,6 @@ local function send_message(session, message)
   local msg = {state = "sending", role = "user", id = (#session.messages + 1), error = nil, data = {role = "user", content = message}}
   table.insert(session.messages, msg)
   session["on-new-message"](msg)
-  log.warn("Messages", session)
   local resp
   local function _5_(_241)
     return (_241).data

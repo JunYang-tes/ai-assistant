@@ -5,7 +5,8 @@
 (local {: Message
         : MessageState
         : Role } (require :ai-assistant.types))
-(local {: set-lines} (require :ai-assistant.window))
+(local {: set-lines
+        : clear} (require :ai-assistant.window))
 (local list (require :ai-assistant.list))
 (local log (require :ai-assistant.log))
 ; (local {: Number
@@ -145,6 +146,7 @@
               (table.insert messages msg)
               (show-message
                 win msg)))
+     :clear (fn [] (clear win))
      :update (fn [msg]
                (let [m (list.first messages
                                    #$1

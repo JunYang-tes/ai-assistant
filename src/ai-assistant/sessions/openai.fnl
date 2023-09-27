@@ -12,9 +12,9 @@
                      :id 0
                      :data {:role :system
                             :content (profile.init)}}]
-                   [])}
-        model (or rest.openai-model
-                  :gpt-3.5-turbo)]
+                   [])
+                 :model (or rest.model
+                            :gpt-3.5-turbo)}]
     (fn get-message-content [msg]
       (assert (not= nil msg) "NIL")
       (. msg :data :content))
@@ -47,7 +47,7 @@
                       msg)
         (emit-event :on-new-message msg)
         (let [resp (completion
-                     {:model model
+                     {:model session.model
                       :messages (list.map session.messages
                                           #(. $1 :data))})]
           (if (is-ok resp)
@@ -67,7 +67,9 @@
               (emit-event :on-message-change msg))))))
 
     (fn update-profile []
-      (let [profile (profile.update)]
+      (let [profile (and
+                      (= (type profile.update) :function)
+                      (profile.update))]
         (if profile
           (let [message {:state :sent
                          :id (+ (length session.messages) 1)
@@ -80,8 +82,26 @@
       (tset session :on-new-message new)
       (tset session :on-message-change update))
 
+    (fn clear []
+      (let [init (profile.init)
+            messages (if init
+                       [{:state :sent
+                         :id 0
+                         :data {:role :system
+                                :content init}}]
+                       [])]
+        (tset session :messages messages)
+        (update-profile)))
+
     {: get-messages
      :name :openai
+     :model (fn [model]
+              (if model
+                (do
+                  (tset session :model model)
+                  model)
+                session.model))
      : set-handlers
      : update-profile
+     : clear
      : send-message}))

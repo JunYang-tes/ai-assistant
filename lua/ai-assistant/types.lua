@@ -15,6 +15,6 @@ local MessageState = OneOf(Const("sending"), Const("sent"), Const("failed"))
 local Message = Table({"state", MessageState, "id", Number, "role", Role, "content", String})
 local OnNewMessage = Fn({Message}, Void)
 local OnUpdateMessage = Fn({Message}, Void)
-local Session = Table({"get-messages", Fn({}, List(Message)), "update-profile", Fn({}, Void), "set-handlers", Fn({OnNewMessage, OnUpdateMessage}, Void), "send-message", Fn({String}, Void)})
+local Session = Table({"get-messages", Fn({}, List(Message)), "name", String, "model", Fn({OneOf(String, Nil)}, String), "update-profile", Fn({}, Void), "set-handlers", Fn({OnNewMessage, OnUpdateMessage}, Void), "send-message", Fn({String}, Void)})
 local Profile = Table({"init", Fn({}, String), "update", Fn({}, OneOf(String, Nil))})
 return {Message = Message, Role = Role, Profile = Profile}

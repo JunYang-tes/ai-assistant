@@ -31,6 +31,8 @@
 (Type OnUpdateMessage (Fn [Message] Void))
 (Type Session (Table
                 [:get-messages (Fn [] (List Message))
+                 :name String
+                 :model (Fn [(OneOf String Nil)] String)
                  :update-profile (Fn [] Void)
                  :set-handlers (Fn [OnNewMessage OnUpdateMessage] Void)
                  :send-message (Fn [String] Void)]))

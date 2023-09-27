@@ -3,6 +3,7 @@
 ;;     (win-opt opt)
 ;;     (get-id)
 (local list (require :ai-assistant.list))
+(local {: get-buf-content} (require :ai-assistant.utils))
 
 (fn float [float_opt enter]
   (vim.validate
@@ -40,6 +41,12 @@
       (vim.api.nvim_win_set_option winid
                                    key val))
     win))
+(fn set-win-config [win config]
+  (let [winid (win.get-winid)]
+    (vim.api.nvim_win_set_config winid config)
+    win))
+(fn set-title [win title]
+  (set-win-config win {: title}))
 
 (fn mul-lines [lines]
   (let [ls []]
@@ -98,12 +105,8 @@
   win)
 
 (fn get-content [win]
-  (table.concat
-    (vim.api.nvim_buf_get_lines
-      (win.get-bufnr)
-      0
-      -1
-      false)))
+  (get-buf-content
+    (win.get-bufnr)))
 
 (fn get-editor-size []
   (let [wins (vim.api.nvim_list_wins)
@@ -141,17 +144,25 @@
       (vim.api.nvim_win_close (win.get-winid) true)
       (vim.api.nvim_buf_delete (win.get-bufnr) {:force true}))))
 
+(fn clear [win]
+  (let [bufnr (win.get-bufnr)
+        line-count (vim.api.nvim_buf_line_count bufnr)]
+    (set-lines win [] 0 line-count)))
+
 {: float
  : get-content
  : close
  : demo
  : highlight
+ : clear
  : normal
  : bufopt
  : winopt
  : buf-keymap
  : get-editor-size
  : markdown
+ : set-win-config
+ : set-title
  : set-lines
  : set-height
  : set-width}

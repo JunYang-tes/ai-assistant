@@ -16,8 +16,7 @@ local function create(_3_)
   else
     _5_ = {}
   end
-  session = {messages = _5_}
-  local model = (rest["openai-model"] or "gpt-3.5-turbo")
+  session = {messages = _5_, model = (rest.model or "gpt-3.5-turbo")}
   local function get_message_content(msg)
     assert((nil ~= msg), "NIL")
     return msg.data.content
@@ -44,7 +43,7 @@ local function create(_3_)
     local function _8_(_241)
       return (_241).data
     end
-    resp = completion({model = model, messages = list.map(session.messages, _8_)})
+    resp = completion({model = session.model, messages = list.map(session.messages, _8_)})
     local _9_
     do
       local v_2_auto = resp
@@ -63,19 +62,38 @@ local function create(_3_)
     end
   end
   local function update_profile()
-    local profile0 = profile.update()
+    local profile0 = ((type(profile.update) == "function") and profile.update())
     if profile0 then
       local message = {state = "sent", id = (#session.messages + 1), data = {role = "system", content = profile0}}
-      table.insert(session.messages, message)
+      return table.insert(session.messages, message)
     else
+      return nil
     end
-    return log.warn(session)
   end
   local function set_handlers(new, update)
     session["on-new-message"] = new
     session["on-message-change"] = update
     return nil
   end
-  return {["get-messages"] = get_messages, name = "openai", ["set-handlers"] = set_handlers, ["update-profile"] = update_profile, ["send-message"] = send_message}
+  local function clear()
+    local init = profile.init()
+    local messages
+    if init then
+      messages = {{state = "sent", id = 0, data = {role = "system", content = init}}}
+    else
+      messages = {}
+    end
+    session["messages"] = messages
+    return update_profile()
+  end
+  local function _14_(model)
+    if model then
+      session["model"] = model
+      return model
+    else
+      return session.model
+    end
+  end
+  return {["get-messages"] = get_messages, name = "openai", model = _14_, ["set-handlers"] = set_handlers, ["update-profile"] = update_profile, clear = clear, ["send-message"] = send_message}
 end
 return create
